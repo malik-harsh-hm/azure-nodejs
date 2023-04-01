@@ -1,13 +1,37 @@
+const { updatePost } = require("../services/postService");
+
 module.exports = async function (context, req) {
-    context.log('JavaScript HTTP trigger function processed a request.');
+  context.log("updatePost processing...");
+  try {
+    const postId = req?.params?.id;
+    const body = req?.body;
 
-    const name = (req.query.name || (req.body && req.body.name));
-    const responseMessage = name
-        ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-        : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
+    if (!postId || !body) {
+      context.res = {
+        status: 400,
+        body: "Missing parametes",
+      };
+      return;
+    }
 
+    const post = await updatePost(postId, body);
+
+    const response = post
+      ? {
+          success: true,
+          post: post,
+        }
+      : {
+          success: false,
+        };
     context.res = {
-        // status: 200, /* Defaults to 200 */
-        body: responseMessage
+      status: 200,
+      body: response,
     };
-}
+  } catch (err) {
+    context.res = {
+      status: 500,
+      body: err.message,
+    };
+  }
+};

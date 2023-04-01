@@ -16,7 +16,7 @@ module.exports = async function (context, req) {
     if (!title) {
       context.res = {
         status: 400,
-        body: "Please pass a title",W
+        body: "Please pass a title",
       };
       return;
     }
